@@ -1,0 +1,5 @@
+LookingFor,Selector,Rule
+Name,h1.detail-name,select_one
+Price,span.price,select_one_float_content
+About,.collapse p,select_ps
+Stars,stars,find_all_lis
