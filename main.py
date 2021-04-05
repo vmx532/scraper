@@ -1,13 +1,20 @@
-from scraper import ToysScraper
+from site import Site, Attribute
+from scraper import scrape_all_sites
 import pandas as pd
 
-"""
-    BS4 + Requests toys.ru lego
-"""
-ts = ToysScraper(page=2)
-links = ts.get_all_links()
-[ts.add_toy(ts.check_link(link)) for link in links]
-[toy.print() for toy in ts.get_toys()]
+DATA_FILE = "data.xlsx"
 
-# toys_objects = toys_scrape()
-# [toy.print() for toy in toys_objects]
+urls_data_df = pd.read_excel(DATA_FILE, sheet_name="urls")
+
+sites = []
+
+for index, row in urls_data_df.iterrows():
+    site = Site(row.URL, row.Title, row.StuffSelector)
+    site_data_df = pd.read_excel(DATA_FILE, sheet_name=site.title)
+    for inner_index, inner_row in site_data_df.iterrows():
+        attribute = Attribute(inner_row.LookingFor, inner_row.Selector, inner_row.Rule)
+        site.add_attribute(attribute)
+    sites.append(site)
+
+excel_sites_stuff = scrape_all_sites(sites)
+print(excel_sites_stuff)
